@@ -5,13 +5,44 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "@assets/*": [
+        "./assets/*"
+      ],
+      "@components/*": [
+        "./components/*"
+      ],
+      "@constants/*": [
+        "./constants/*"
+      ],
+      "@hooks/*": [
+        "./hooks/*"
+      ],
+      "@navigation/*": [
+        "./navigation/*"
+      ],
+      "@screens/*": [
+        "./screens/*"
+      ],
+      "@services/*": [
+        "./services/*"
+      ],
+      "@utils/*": [
+        "./utils/*"
+      ],
+      "@type/*": [
+        "./type/*"
+      ],
+      "@data/*": [
+        "./data/*"
+      ],
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "nativewind-env.d.ts"
   ]
 }
