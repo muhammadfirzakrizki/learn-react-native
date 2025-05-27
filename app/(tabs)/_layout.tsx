@@ -6,7 +6,6 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
@@ -21,15 +20,14 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        headerShown: useClientOnlyValue(false, true), // Ini akan di-override di masing-masing Tab.Screen jika diperlukan
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'News Local',
           tabBarIcon: ({ color }) => <TabBarIcon name="newspaper-o" color={color} />,
+          // Opsi header di sini jika Anda ingin header khusus untuk tab ini
         }}
       />
        <Tabs.Screen
@@ -37,13 +35,14 @@ export default function TabLayout() {
         options={{
           title: 'News API',
           tabBarIcon: ({ color }) => <TabBarIcon name="newspaper-o" color={color} />,
+          // Opsi header di sini
         }}
       />
       <Tabs.Screen
-        name="news"
+        name="news/index" // Ini merujuk ke app/(tabs)/news/index.tsx
         options={{
-          title: 'News Gnews',
-          tabBarIcon: ({ color }) => <TabBarIcon name="newspaper-o" color={color} />,
+          title: 'News Global API',
+          tabBarIcon: ({ color }) => <TabBarIcon name="newspaper-o" color={color} />
         }}
       />
     </Tabs>

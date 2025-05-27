@@ -1,29 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, ActivityIndicator, Linking, Image, TouchableOpacity, View, Text } from 'react-native';
+import { FlatList, ActivityIndicator, Image, TouchableOpacity, View, Text } from 'react-native';
+import { useRouter } from 'expo-router'; // Import useRouter dari expo-router
 
 interface Article {
     title: string;
     description: string;
     url: string;
-    image: string;
+    urlToImage: string;
     publishedAt: string;
     source: {
         name: string;
     };
-};
+}
 
 function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export default function TabThreeScreen() {
+export default function HomeScreen() { // Nama komponen bisa disesuaikan dengan file index.tsx di folder app
     const [articles, setArticles] = useState<Article[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter(); // Inisialisasi router
 
     useEffect(() => {
-        const apikey = '7a5c296dee4005035db430d2be81c8a4';
-        const url = `https://gnews.io/api/v4/search?q=technology&lang=en&country=us&max=10&apikey=${apikey}`;
+        const apikey = '0379e8913c9a4d039018a14f91e1eee9';
+        const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apikey}`;
 
         setLoading(true);
         setArticles([]);
@@ -62,7 +64,7 @@ export default function TabThreeScreen() {
 
     return (
         <View className="flex-1 bg-white px-4 pt-12">
-            <Text className="text-3xl font-extrabold mb-6 text-gray-900">Berita GNews</Text>
+            <Text className="text-3xl font-extrabold mb-6 text-gray-900">NewsAPI Headlines</Text>
 
             <FlatList
                 data={articles}
@@ -72,12 +74,12 @@ export default function TabThreeScreen() {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        onPress={() => Linking.openURL(item.url)}
+                        onPress={() => router.replace({ pathname: `/[slug]`, params: { article: JSON.stringify(item) } })} // Menggunakan router.push untuk navigasi
                         className="flex-row mb-5 bg-gray-100 rounded-lg p-3 shadow-md"
                     >
-                        {item.image ? (
+                        {item.urlToImage ? (
                             <Image
-                                source={{ uri: item.image }}
+                                source={{ uri: item.urlToImage }}
                                 className="w-28 h-20 rounded-lg bg-gray-300"
                                 resizeMode="cover"
                             />

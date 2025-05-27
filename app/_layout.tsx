@@ -54,7 +54,20 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+        <Stack.Screen
+          name="/detail/[slug]"
+          options={{
+            title: 'Detail Artikel',
+            headerStyle: {
+              backgroundColor: colorScheme === 'dark' ? '#121212' : '#fff',
+            },
+            headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',
+            headerTitleStyle: {
+              fontFamily: 'SpaceMono',
+              fontSize: 20,
+            },
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );
