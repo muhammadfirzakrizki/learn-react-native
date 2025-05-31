@@ -56,8 +56,10 @@ function RootLayoutNav() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name='detailnews' options={{ headerShown: false }} />
-          <Stack.Screen
+          <Stack.Screen name='detailsnews/[details]' options={{ headerShown: false }} />
+
+          {/* <Stack.Screen name='detailnews' options={{ headerShown: false }} /> */}
+          {/* <Stack.Screen
             name="/detail/[slug]"
             options={{
               title: 'Detail Artikel',
@@ -70,7 +72,7 @@ function RootLayoutNav() {
                 fontSize: 20,
               },
             }}
-          />
+          /> */}
         </Stack>
       </ThemeProvider>
     </ArticleProvider>

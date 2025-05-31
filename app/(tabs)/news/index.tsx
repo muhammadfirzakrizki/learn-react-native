@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, ActivityIndicator, Image, TouchableOpacity, View, Text } from 'react-native';
-import { useRouter } from 'expo-router'; // Import useRouter dari expo-router
+import { useRouter, Link } from 'expo-router'; // Import useRouter dari expo-router
 import { useArticle } from '@/context/ArticleContext';
 
 interface Article {
@@ -66,16 +66,16 @@ export default function HomeScreen() { // Nama komponen bisa disesuaikan dengan 
     }
 
     // saat klik artikel
-    const onArticlePress = (item: Article) => {
-        setArticle(item);
-        router.push('/detailnews'); // tanpa bawa params
-    };
+    // const onArticlePress = (item: Article) => {
+    //     setArticle(item);
+    //     router.push('/detailnews'); // tanpa bawa params
+    // };
 
     return (
         <View className="flex-1 bg-white px-4 pt-12">
             <Text className="text-3xl font-extrabold mb-6 text-gray-900">NewsAPI Headlines</Text>
 
-            <FlatList
+            {/* <FlatList
                 data={articles}
                 keyExtractor={(item) => item.url}
                 showsVerticalScrollIndicator={false}
@@ -112,7 +112,63 @@ export default function HomeScreen() { // Nama komponen bisa disesuaikan dengan 
                         </View>
                     </TouchableOpacity>
                 )}
+            /> */}
+
+            <FlatList
+                data={articles}
+                keyExtractor={(item) => `${item.url}-${item.publishedAt}`}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 16 }}
+                renderItem={({ item }) => (
+                    <Link
+                        href={{
+                            pathname: '/detailsnews/[details]',
+                            params: {
+                                details: item.title, // Add this line
+                                url: encodeURIComponent(item.url),
+                                title: item.title,
+                                image: item.urlToImage,
+                                source: item.source.name,
+                                date: item.publishedAt,
+                                description: item.description,
+                                content: item.content
+                            }
+                        }}
+                        asChild
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            className="flex-row mb-5 bg-gray-100 rounded-lg p-3 shadow-md"
+                        >
+                            {item.urlToImage ? (
+                                <Image
+                                    source={{ uri: item.urlToImage }}
+                                    className="w-28 h-20 rounded-lg bg-gray-300"
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                <View className="w-28 h-20 rounded-lg bg-gray-300 justify-center items-center">
+                                    <Text className="text-gray-500">No Image</Text>
+                                </View>
+                            )}
+
+                            <View className="flex-1 ml-4 justify-between">
+                                <Text className="text-lg font-semibold text-gray-900" numberOfLines={2}>
+                                    {item.title}
+                                </Text>
+                                <Text className="text-gray-700 mt-1" numberOfLines={3}>
+                                    {item.description || 'No description available.'}
+                                </Text>
+                                <View className="flex-row justify-between mt-3">
+                                    <Text className="italic text-xs text-gray-500">{item.source.name}</Text>
+                                    <Text className="text-xs text-gray-500">{formatDate(item.publishedAt)}</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </Link>
+                )}
             />
+
         </View>
     );
 }
