@@ -23,6 +23,14 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true), // Ini akan di-override di masing-masing Tab.Screen jika diperlukan
       }}>
       <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          // Opsi header di sini jika Anda ingin header khusus untuk tab ini
+        }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: 'News Local',
@@ -30,7 +38,7 @@ export default function TabLayout() {
           // Opsi header di sini jika Anda ingin header khusus untuk tab ini
         }}
       />
-       <Tabs.Screen
+      <Tabs.Screen
         name="laravelapi"
         options={{
           title: 'News API',
