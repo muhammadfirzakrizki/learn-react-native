@@ -9,6 +9,7 @@ import {
     ScrollView,
     Modal,
     Alert,
+    Dimensions,
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -90,7 +91,7 @@ export default function HomeScreen() {
                 date: formattedDate,
                 completed: false,
             };
-            setTodos((prev) => [newTodo, ...prev]);
+            setTodos((prev) => [...prev, newTodo]);
         } else if (modalMode === "edit" && selectedTodoId !== null) {
             setTodos((prev) =>
                 prev.map((t) =>
@@ -125,6 +126,8 @@ export default function HomeScreen() {
             )
         );
     };
+
+    const screenWidth = Dimensions.get("window").width;
 
     return (
         <ScrollView className="flex-1 bg-gray-100 px-4 py-6">
@@ -177,44 +180,83 @@ export default function HomeScreen() {
                         </View>
 
                         {/* Icon Aksi */}
-                        <View className="flex-row items-center gap-2 ml-2">
-                            <TouchableOpacity onPress={() => openEditModal(item)}>
-                                <Feather name="edit" size={20} color="#4B5563" />
+                        <View className="flex-row items-center gap-3 ml-2">
+                            <TouchableOpacity
+                                onPress={() => openEditModal(item)}
+                                className="bg-blue-500 p-2 rounded-full shadow"
+                                activeOpacity={0.7}
+                            >
+                                <Feather name="edit" size={20} color="white" />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => openDeleteModal(item.id)}>
-                                <MaterialIcons name="delete-outline" size={22} color="#EF4444" />
+
+                            <TouchableOpacity
+                                onPress={() => openDeleteModal(item.id)}
+                                className="bg-red-500 p-2 rounded-full shadow"
+                                activeOpacity={0.7}
+                            >
+                                <MaterialIcons name="delete-outline" size={22} color="white" />
                             </TouchableOpacity>
                         </View>
+
                     </View>
                 )}
             />
 
             {/* Modal Tambah/Edit */}
+
             <Modal
                 visible={modalVisible}
                 transparent={true}
                 animationType="slide"
                 onRequestClose={() => setModalVisible(false)}
             >
-                <View className="flex-1 justify-center items-center bg-black bg-opacity-50 px-6">
-                    <View className="bg-white rounded-2xl p-6 w-full max-w-md">
-                        <Text className="text-2xl font-bold mb-4 text-gray-800">
-                            {modalMode === "add" ? "Tambah Todo" : "Edit Todo"}
-                        </Text>
+                <View
+                    className="flex-1 justify-center items-center bg-black bg-opacity-60 px-6"
+                    style={
+                        Platform.OS === "web"
+                            ? { backdropFilter: "blur(5px)" }
+                            : {}
+                    }
+                >
+                    <View className="bg-white rounded-3xl p-8 w-full max-w-md shadow-lg">
+                        {/* Header dengan ikon */}
+                        <View className="flex-row items-center mb-6 gap-3">
+                            {modalMode === "add" ? (
+                                <Feather name="plus-circle" size={32} color="#2563EB" />
+                            ) : (
+                                <Feather name="edit-3" size={32} color="#2563EB" />
+                            )}
+                            <Text className="text-3xl font-extrabold text-gray-900">
+                                {modalMode === "add" ? "Tambah Todo" : "Edit Todo"}
+                            </Text>
+                        </View>
 
+                        <View className="flex-row items-center mb-3 gap-2">
+                            <Feather name="activity" size={20} color="#4B5563" />
+                            <Text className="text-gray-700 font-semibold">Kegiatan :</Text>
+                        </View>
+                        {/* Input Nama Kegiatan */}
                         <TextInput
-                            className="border border-gray-300 p-3 rounded-xl mb-4 bg-gray-50"
+                            className="border border-gray-300 p-4 rounded-2xl mb-5 bg-gray-50 focus:border-blue-500"
                             placeholder="Nama kegiatan"
                             value={activity}
                             onChangeText={setActivity}
+                            style={{
+                                fontSize: 16,
+                                fontWeight: "500",
+                            }}
                         />
 
-                        <Text className="mb-2 text-gray-600">Kategori:</Text>
-                        <View className="border border-gray-300 rounded-xl mb-4">
+                        {/* Label Kategori dengan ikon */}
+                        <View className="flex-row items-center mb-3 gap-2">
+                            <Feather name="tag" size={20} color="#4B5563" />
+                            <Text className="text-gray-700 font-semibold">Kategori:</Text>
+                        </View>
+                        <View className="border border-gray-300 rounded-2xl mb-6 overflow-hidden">
                             <Picker
                                 selectedValue={category}
-                                onValueChange={(itemValue) => setCategory(itemValue)}
-                                style={{ height: 40, width: "100%" }}
+                                onValueChange={(itemValue: any) => setCategory(itemValue)}
+                                style={{ height: 50, width: "100%" }}
                                 dropdownIconColor="#2563EB"
                             >
                                 {CATEGORIES.map((cat) => (
@@ -223,7 +265,11 @@ export default function HomeScreen() {
                             </Picker>
                         </View>
 
-                        <Text className="mb-2 text-gray-600">Tanggal:</Text>
+                        {/* Label Tanggal dengan ikon */}
+                        <View className="flex-row items-center mb-3 gap-2">
+                            <Feather name="calendar" size={20} color="#4B5563" />
+                            <Text className="text-gray-700 font-semibold">Tanggal:</Text>
+                        </View>
                         {Platform.OS === "web" ? (
                             <input
                                 type="date"
@@ -231,20 +277,26 @@ export default function HomeScreen() {
                                 onChange={(e) => setDate(new Date(e.target.value))}
                                 style={{
                                     border: "1px solid #ccc",
-                                    padding: 12,
-                                    borderRadius: 12,
-                                    marginBottom: 16,
+                                    padding: 14,
+                                    borderRadius: 16,
+                                    marginBottom: 24,
                                     backgroundColor: "#f9f9f9",
                                     width: "100%",
+                                    fontSize: 16,
+                                    fontWeight: "500",
+                                    outlineColor: "#2563EB",
                                 }}
                             />
                         ) : (
                             <>
                                 <TouchableOpacity
                                     onPress={() => setShowDate(true)}
-                                    className="mb-3 p-3 border border-gray-300 rounded-xl bg-gray-50"
+                                    className="mb-5 p-4 border border-gray-300 rounded-2xl bg-gray-50 flex-row items-center"
                                 >
-                                    <Text className="text-gray-800">{date.toDateString()}</Text>
+                                    <Feather name="calendar" size={20} color="#2563EB" style={{ marginRight: 8 }} />
+                                    <Text className="text-gray-900 font-medium" style={{ fontSize: 16 }}>
+                                        {date.toDateString()}
+                                    </Text>
                                 </TouchableOpacity>
                                 {showDate && (
                                     <DateTimePicker
@@ -261,19 +313,53 @@ export default function HomeScreen() {
                         )}
 
                         {/* Buttons */}
-                        <View className="flex-row justify-end gap-4 mt-4">
+                        <View className="flex-row justify-end gap-5 mt-6">
                             <TouchableOpacity
                                 onPress={() => setModalVisible(false)}
-                                className="px-4 py-2 rounded-xl border border-gray-400"
+                                className="px-6 py-3 rounded-3xl border border-gray-400 flex-row items-center gap-2"
+                                activeOpacity={0.7}
                             >
-                                <Text className="text-gray-700 font-semibold">Batal</Text>
+                                <Feather name="x" size={20} color="#374151" />
+                                <Text className="text-gray-700 font-semibold text-lg">Batal</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                onPress={handleSaveTodo}
-                                className="bg-blue-600 px-4 py-2 rounded-xl"
+                                onPress={() => {
+                                    if (Platform.OS === 'web') {
+                                        const confirmed = window.confirm(
+                                            modalMode === "add"
+                                                ? "Apakah kamu yakin ingin menambahkan todo ini?"
+                                                : "Apakah kamu yakin ingin menyimpan perubahan?"
+                                        );
+                                        if (confirmed) {
+                                            handleSaveTodo();
+                                        }
+                                    } else {
+                                        Alert.alert(
+                                            modalMode === "add" ? "Konfirmasi Tambah" : "Konfirmasi Edit",
+                                            modalMode === "add"
+                                                ? "Apakah kamu yakin ingin menambahkan todo ini?"
+                                                : "Apakah kamu yakin ingin menyimpan perubahan?",
+                                            [
+                                                {
+                                                    text: "Batal",
+                                                    style: "cancel",
+                                                },
+                                                {
+                                                    text: "Ya, Lanjutkan",
+                                                    onPress: handleSaveTodo,
+                                                },
+                                            ],
+                                            { cancelable: true }
+                                        );
+                                    }
+                                }}
+
+                                className="bg-blue-600 px-6 py-3 rounded-3xl flex-row items-center gap-2"
+                                activeOpacity={0.8}
                             >
-                                <Text className="text-white font-semibold">
+                                <Feather name="check" size={20} color="white" />
+                                <Text className="text-white font-semibold text-lg">
                                     {modalMode === "add" ? "Tambah" : "Simpan"}
                                 </Text>
                             </TouchableOpacity>
@@ -282,6 +368,7 @@ export default function HomeScreen() {
                 </View>
             </Modal>
 
+
             {/* Modal Delete Konfirmasi */}
             <Modal
                 visible={deleteModalVisible}
@@ -289,25 +376,42 @@ export default function HomeScreen() {
                 animationType="fade"
                 onRequestClose={() => setDeleteModalVisible(false)}
             >
-                <View className="flex-1 justify-center items-center bg-black bg-opacity-40 px-6">
-                    <View className="bg-white rounded-2xl p-6 w-full max-w-xs">
-                        <Text className="text-xl font-semibold mb-4 text-gray-800 text-center">
-                            Yakin ingin menghapus todo ini?
+                <View className="flex-1 justify-center items-center bg-black bg-opacity-50 px-6">
+                    <View className="bg-white rounded-3xl p-8 w-full max-w-xs shadow-lg">
+                        {/* Ikon warning besar */}
+                        <View className="items-center mb-6">
+                            <MaterialIcons name="warning" size={48} color="#DC2626" />
+                        </View>
+
+                        {/* Judul */}
+                        <Text className="text-center text-2xl font-extrabold text-red-600 mb-3">
+                            Peringatan!
                         </Text>
 
+                        {/* Pesan */}
+                        <Text className="text-center text-gray-700 text-base mb-6 px-4">
+                            Apakah kamu yakin ingin menghapus todo ini? Tindakan ini tidak dapat
+                            dibatalkan.
+                        </Text>
+
+                        {/* Tombol */}
                         <View className="flex-row justify-center gap-6">
                             <TouchableOpacity
                                 onPress={() => setDeleteModalVisible(false)}
-                                className="px-6 py-2 rounded-xl border border-gray-400"
+                                className="px-6 py-3 rounded-2xl border border-gray-400 flex-row items-center gap-2"
+                                activeOpacity={0.7}
                             >
-                                <Text className="text-gray-700 font-semibold text-center">Batal</Text>
+                                <MaterialIcons name="cancel" size={22} color="#374151" />
+                                <Text className="text-gray-700 font-semibold text-lg">Batal</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 onPress={handleDeleteTodo}
-                                className="bg-red-600 px-6 py-2 rounded-xl"
+                                className="bg-red-600 px-6 py-3 rounded-2xl flex-row items-center gap-2"
+                                activeOpacity={0.8}
                             >
-                                <Text className="text-white font-semibold text-center">Hapus</Text>
+                                <MaterialIcons name="delete" size={22} color="white" />
+                                <Text className="text-white font-semibold text-lg">Hapus</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

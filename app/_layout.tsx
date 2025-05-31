@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { ArticleProvider } from '@/context/ArticleContext';
 
 import { useColorScheme } from '@/components/useColorScheme';
 // Impor file CSS global di sini!
@@ -51,24 +52,27 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="/detail/[slug]"
-          options={{
-            title: 'Detail Artikel',
-            headerStyle: {
-              backgroundColor: colorScheme === 'dark' ? '#121212' : '#fff',
-            },
-            headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',
-            headerTitleStyle: {
-              fontFamily: 'SpaceMono',
-              fontSize: 20,
-            },
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
+    <ArticleProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name='detailnews' options={{ headerShown: false }} />
+          <Stack.Screen
+            name="/detail/[slug]"
+            options={{
+              title: 'Detail Artikel',
+              headerStyle: {
+                backgroundColor: colorScheme === 'dark' ? '#121212' : '#fff',
+              },
+              headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',
+              headerTitleStyle: {
+                fontFamily: 'SpaceMono',
+                fontSize: 20,
+              },
+            }}
+          />
+        </Stack>
+      </ThemeProvider>
+    </ArticleProvider>
   );
 }

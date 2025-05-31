@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, ActivityIndicator, Image, TouchableOpacity, View, Text } from 'react-native';
 import { useRouter } from 'expo-router'; // Import useRouter dari expo-router
+import { useArticle } from '@/context/ArticleContext';
 
 interface Article {
     title: string;
     description: string;
+    content: string;
     url: string;
     urlToImage: string;
     publishedAt: string;
@@ -18,6 +20,7 @@ function formatDate(dateString: string) {
 }
 
 export default function HomeScreen() { // Nama komponen bisa disesuaikan dengan file index.tsx di folder app
+    const { setArticle } = useArticle();
     const [articles, setArticles] = useState<Article[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -62,6 +65,12 @@ export default function HomeScreen() { // Nama komponen bisa disesuaikan dengan 
         );
     }
 
+    // saat klik artikel
+    const onArticlePress = (item: Article) => {
+        setArticle(item);
+        router.push('/detailnews'); // tanpa bawa params
+    };
+
     return (
         <View className="flex-1 bg-white px-4 pt-12">
             <Text className="text-3xl font-extrabold mb-6 text-gray-900">NewsAPI Headlines</Text>
@@ -74,7 +83,7 @@ export default function HomeScreen() { // Nama komponen bisa disesuaikan dengan 
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        onPress={() => router.replace({ pathname: `/[slug]`, params: { article: JSON.stringify(item) } })} // Menggunakan router.push untuk navigasi
+                        onPress={() => onArticlePress(item)}
                         className="flex-row mb-5 bg-gray-100 rounded-lg p-3 shadow-md"
                     >
                         {item.urlToImage ? (
